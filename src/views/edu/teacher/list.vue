@@ -77,10 +77,6 @@
       this.getTeacherList()
     },
     methods: {
-
-
-
-
       //获取讲师列表
       getTeacherList(currentPage = 1) {
         this.currentPage = currentPage
