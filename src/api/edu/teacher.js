@@ -34,5 +34,11 @@ export default {
       method: 'post',
       data: updateEduTeacher
     })
-  }
+  },
+  queryTeacherList() {
+    return request({
+      url: '/eduService/eduTeacher/queryAllEduTeacher',
+      method: 'get'
+    })
+  },
 }
