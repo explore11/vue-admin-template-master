@@ -21,7 +21,27 @@
       <el-form-item label="讲师简介">
         <el-input v-model="teacher.intro" :rows="10" type="textarea"/>
       </el-form-item>
-      <!-- 讲师头像：TODO -->
+      <!-- 讲师头像 -->
+      <el-form-item label="讲师头像">
+        <!-- 头衔缩略图 -->
+        <pan-thumb :image="teacher.avatar"></pan-thumb>
+        <!-- 文件上传按钮 -->
+        <el-button type="primary" icon="el-icon-upload" @click="imagecropperShow=true">更换头像</el-button>
+
+        <!-- v-show：是否显示上传组件:
+        key:类似于id，如果一个页面多个图片上传控件，可以做区分
+        url：后台上传的url地址
+        @close：关闭上传组件
+        @crop-upload-success：上传成功后的回调 -->
+        <image-cropper v-show="imagecropperShow"
+                       :width="300"
+                       :height="300"
+                       :key="imagecropperKey"
+                       :url="BASE_API+'/oss/picture/upload'"
+                       field="file"
+                       @close="close"
+                       @crop-upload-success="cropSuccess"/>
+      </el-form-item>
       <el-form-item>
         <el-button :disabled="saveBtnDisabled" type="primary" @click="saveOrUpdate">保存</el-button>
       </el-form-item>
@@ -31,11 +51,17 @@
 
 <script>
   import teacher from '@/api/edu/teacher'
+  import ImageCropper from '@/components/ImageCropper'
+  import PanThumb from '@/components/PanThumb'
 
   export default {
     name: 'add',
+    components: { ImageCropper, PanThumb },
     data() {
       return {
+        BASE_API: process.env.BASE_API,
+        imagecropperKey: 0,  // 图片的唯一标识
+        imagecropperShow: false, // 图片弹框是否显示
         saveBtnDisabled: false,   // 保存按钮是否禁用
         teacher: {
           name: '',
@@ -56,6 +82,18 @@
       }
     },
     methods: {
+      close() {  //关闭上传组件
+        this.imagecropperShow = false
+        // key发生变化 解决重新上传图片问题
+        this.imagecropperKey = this.imagecropperKey + 1
+      },
+      cropSuccess(data) { // 上传成功后的回调
+        console.log(data)
+        this.teacher.avatar = data.url
+        //关闭上传组件
+        this.imagecropperShow = false
+        this.imagecropperKey = this.imagecropperKey + 1
+      },
       init() {
         // 有id  说明是  更新  需要有回显
         if (this.$route.params && this.$route.params.id) {
@@ -63,7 +101,14 @@
           this.getTeacher(id)
         } else {
           // 没有有id  说明是  保存  不需要有回显
-          this.teacher = {}
+          this.teacher = {
+            name: '',
+            sort: 0,
+            level: 1,
+            career: '',
+            intro: '',
+            avatar: ''
+          }
         }
       },
       getTeacher(id) {
