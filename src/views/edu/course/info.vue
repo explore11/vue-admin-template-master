@@ -98,7 +98,6 @@
     },
     created() {
       if (this.$route.params && this.$route.params.id) {
-        alert(1)
         this.courseId = this.$route.params.id
         //查询
         this.getCourseInfo()
@@ -189,7 +188,7 @@
           }
         )
       },
-      addAndUpdate() {
+      addCourse() {
         course.addCourseInfo(this.courseInfo).then(
           response => {
             // 提示信息
@@ -200,7 +199,26 @@
             this.$router.push({ path: '/course/chapter/' + response.data.courseId })
           }
         )
-
+      },
+      updateCourse() {
+        course.updateCourseInfo(this.courseInfo).then(
+          response => {
+            // 提示信息
+            this.$message({
+              type: 'success',
+              message: '更新课程完成,请下一步'
+            })
+            this.$router.push({ path: '/course/chapter/' + this.courseId })
+          }
+        )
+      },
+      addAndUpdate() {
+        //判断是更新还是添加
+        if (!this.courseInfo.id) {
+          this.addCourse()
+        } else {
+          this.updateCourse()
+        }
       }
     }
   }
