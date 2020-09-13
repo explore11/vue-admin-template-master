@@ -20,6 +20,11 @@ export default {
       method: 'post',
       data: courseInfo
     })
+  },
+  getCoursePublicInfo(courseId) {
+    return request({
+      url: '/eduService/eduCourse/getCoursePublicInfo/' + courseId,
+      method: 'get'
+    })
   }
-
 }

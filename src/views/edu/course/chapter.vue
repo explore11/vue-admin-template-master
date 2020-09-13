@@ -302,7 +302,7 @@
       }
       ,
       next() {
-        this.$router.push({ path: '/course/publish/1' + this.courseId })
+        this.$router.push({ path: '/course/publish/' + this.courseId })
       }
     }
   }
