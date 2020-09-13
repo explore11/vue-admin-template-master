@@ -7,5 +7,19 @@ export default {
       method: 'post',
       data: courseInfo
     })
+  },
+  getCourseInfoById(courseId) {
+    return request({
+      url: '/eduService/eduCourse/queryCourseInfo/' + courseId,
+      method: 'get'
+    })
+  },
+  updateCourseInfo(courseInfo) {
+    return request({
+      url: '/eduService/eduCourse/updateCourseInfo',
+      method: 'post',
+      data: courseInfo
+    })
   }
+
 }

@@ -92,16 +92,62 @@
         teacherList: [],
         oneSubjectList: [],
         twoSubjectList: [],
-        BASE_API: process.env.BASE_API // 接口API地址
+        BASE_API: process.env.BASE_API, // 接口API地址
+        courseId: ''
       }
     },
     created() {
-      // 讲师列表
-      this.queryTeacherList()
-      // 一级分类
-      this.getOneSubjectList()
+      if (this.$route.params && this.$route.params.id) {
+        alert(1)
+        this.courseId = this.$route.params.id
+        //查询
+        this.getCourseInfo()
+      } else {
+        this.courseInfo = {
+          title: '',
+          subjectParentId: '',
+          subjectId: '',
+          teacherId: '',
+          lessonNum: 0,
+          description: '',
+          cover: 'https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1697850329,1416483110&fm=26&gp=0.jpg',
+          price: 0
+        }
+        // 讲师列表
+        this.queryTeacherList()
+        // 一级分类
+        this.getOneSubjectList()
+      }
+
     },
     methods: {
+      getCourseInfo() {
+        course.getCourseInfoById(this.courseId).then(
+          response => {
+            this.courseInfo = response.data.courseInfo
+            // 获取所有的一级分类和二级分类
+            subject.getQuerySubjectList().then(
+              response => {
+                //获取所有的一级分类
+                this.oneSubjectList = response.data.list
+
+                // 循环一级分类
+                for (let i = 0; i < this.oneSubjectList.length; i++) {
+                  // 获取课程信息
+                  let subject = this.oneSubjectList[i]
+                  if (this.courseInfo.subjectParentId === subject.id) {
+                    // 获取二级分类 赋值
+                    this.twoSubjectList = subject.children
+                  }
+                }
+                // 讲师列表
+                this.queryTeacherList()
+              }
+            )
+
+          }
+        )
+      },
       handleAvatarSuccess(response, file) {
         this.courseInfo.cover = response.data.url
       },
