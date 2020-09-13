@@ -32,5 +32,19 @@ export default {
       url: '/eduService/eduCourse/coursePublic/' + courseId,
       method: 'post'
     })
+  },
+  multiQueryEduCoursePage(current, limit, queryEduCourse) {
+    return request({
+      url: `/eduService/eduCourse/multiQueryEduCoursePage/${current}/${limit}`,
+      method: 'post',
+      data: queryEduCourse
+    })
+  },
+  deleteCourseById(courseId) {
+    return request({
+      url: '/eduService/eduCourse/deleteCourseById/' + courseId,
+      method: 'delete'
+    })
   }
+
 }
