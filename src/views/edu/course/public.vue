@@ -29,6 +29,7 @@
 
 <script>
   import course from '@/api/edu/course'
+  import teacher from '@/api/edu/teacher'
 
   export default {
     name: 'public',
@@ -36,15 +37,7 @@
       return {
         saveBtnDisabled: false, // 保存按钮是否禁用
         courseId: '',
-        coursePublish: {
-          // title: '',
-          // cover: '',
-          // lessonNum: 0,
-          // subjectLevelOne: '',
-          // subjectLevelTwo: '',
-          // teacherName: '',
-          // price: 0
-        }
+        coursePublish: {}
       }
     },
     created() {
@@ -66,7 +59,30 @@
         this.$router.push({ path: '/course/chapter/' + this.courseId })
       },
       publish() {
-        this.$router.push({ path: '/course/list' })
+        this.$confirm('此操作将发布课程信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //调用删除方法
+          course.coursePublic(this.courseId).then(
+            response => {
+              // 提示信息
+              this.$message({
+                type: 'success',
+                message: '发布成功!'
+              })
+            }
+          )
+          // 跳转
+          this.$router.push({ path: '/course/list' })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+
       }
     }
   }
