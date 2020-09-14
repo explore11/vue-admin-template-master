@@ -26,6 +26,11 @@ export default {
       url: '/eduService/eduVideo/getVideoInfo/' + videoId,
       method: 'get'
     })
+  },
+  deleteVideoByAliYun(videoSourceId) {
+    return request({
+      url: '/eduVideo/video/deleteVideo/' + videoSourceId,
+      method: 'delete'
+    })
   }
-
 }

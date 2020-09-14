@@ -68,7 +68,25 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="上传视频">
-          <!-- TODO -->
+          <el-upload :on-success="handleVodUploadSuccess"
+                     :on-remove="handleVodRemove"
+                     :before-remove="beforeVodRemove"
+                     :on-exceed="handleUploadExceed"
+                     :file-list="fileList"
+                     :action="BASE_API+'/eduVideo/video/uploadVideo'"
+                     :limit="1"
+                     class="upload-demo">
+            <el-button size="small" type="primary">上传视频</el-button>
+
+            <el-tooltip placement="right-end">
+              <div slot="content">最大支持1G，<br> 支持3GP、ASF、AVI、DAT、DV、FLV、F4V、<br>
+                GIF、M2T、M4V、MJ2、MJPEG、MKV、MOV、MP4、<br>16 MPE、MPG、MPEG、MTS、OGG、QT、RM、RMVB、
+                <br> SWF、TS、VOB、WMV、WEBM
+                等视频格式上传
+              </div>
+              <i class="el-icon-question"/>
+            </el-tooltip>
+          </el-upload>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -76,7 +94,6 @@
         <el-button type="primary" @click="saveOrUpdateVideo">确 定</el-button>
       </div>
     </el-dialog>
-
 
     <div>
       <el-button @click="previous">上一步</el-button>
@@ -102,6 +119,8 @@
           title: '',
           sort: 0
         },
+        fileList: [],//上传文件列表
+        BASE_API: process.env.BASE_API, // 接口API地址
         chapterId: '', // 课时所在的章节id
         videoId: '',
         video: {// 课时对象
@@ -110,7 +129,8 @@
           free: 0,
           courseId: '',
           chapterId: '',
-          videoSourceId: ''
+          videoSourceId: '',
+          videoOriginalName: ''
         }
       }
     },
@@ -121,7 +141,32 @@
       }
     },
     methods: {
-
+      handleVodRemove() {
+        video.deleteVideoByAliYun(this.video.videoSourceId).then(
+          response => {
+            // 提示信息
+            this.$message({
+              type: 'success',
+              message: '视频删除成功!'
+            })
+            //
+            this.fileList = []
+            //置为空
+            this.video.videoSourceId = ''
+            this.video.videoOriginalName = ''
+          }
+        )
+      },
+      beforeVodRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${file.name}`)
+      },
+      handleVodUploadSuccess(response, file, fileList) {
+        this.video.videoSourceId = response.data.videoId
+        this.video.videoOriginalName = file.name
+      },
+      handleUploadExceed(files, fileList) {
+        this.$message.warning('想要重新上传视频，请先删除已上传的视频')
+      },
       removeVideo(videoId) {
         this.$confirm('此操作将永久删除该小结信息, 是否继续?', '提示', {
           confirmButtonText: '确定',
