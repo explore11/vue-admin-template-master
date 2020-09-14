@@ -250,6 +250,8 @@
         this.dialogVideoFormVisible = true
         this.video.chapterId = chapterId
         this.video.courseId = this.courseId
+
+        this.fileList = []
       }
       ,
       removeChapter(chapterId) {
