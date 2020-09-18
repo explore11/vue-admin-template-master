@@ -125,7 +125,29 @@ export const constantRouterMap = [
         component: () => import('@/views/edu/course/public'),
         meta: { title: '发布课程', icon: 'tree' },
         hidden: true
+      }
+    ]
+  },
+
+  {
+    path: '/sta',
+    component: Layout,
+    redirect: '/str/create',
+    name: '数据统计',
+    meta: { title: '数据统计', icon: 'example' },
+    children: [
+      {
+        path: 'create',
+        name: '生成数据',
+        component: () => import('@/views/sta/create'),
+        meta: { title: '生成数据', icon: 'table' }
       },
+      {
+        path: 'show',
+        name: '数据显示',
+        component: () => import('@/views/sta/show'),
+        meta: { title: '数据显示', icon: 'tree' }
+      }
     ]
   },
 
